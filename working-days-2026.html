@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Working Days &amp; Holidays Remaining in 2026</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 16px;
+      box-sizing: border-box;
+      background: #f0f4f8;
+    }
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
+      max-width: 520px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 40px 48px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.5rem;
+      color: #333;
+      margin: 0 0 8px;
+    }
+    .count {
+      font-size: 5.5rem;
+      font-weight: bold;
+      color: #2563eb;
+      line-height: 1;
+      margin: 20px 0;
+    }
+    .count.holiday-count {
+      color: #dc2626;
+    }
+    .label {
+      font-size: 1.1rem;
+      color: #555;
+    }
+    .note {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .holiday-list {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 0;
+      text-align: left;
+    }
+    .holiday-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 6px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.9rem;
+      color: #444;
+    }
+    .holiday-list li:last-child {
+      border-bottom: none;
+    }
+    .holiday-list li .hdate {
+      color: #888;
+      font-size: 0.8rem;
+      margin-left: 12px;
+      white-space: nowrap;
+    }
+    .holiday-list li.past {
+      color: #bbb;
+      text-decoration: line-through;
+    }
+    .holiday-list li.past .hdate {
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Working days card -->
+    <div class="card">
+      <h1>Working Days Remaining in 2026</h1>
+      <div id="workCount" class="count">—</div>
+      <div id="workLabel" class="label"></div>
+      <p class="note" id="workNote"></p>
+    </div>
+
+    <!-- Holidays card -->
+    <div class="card">
+      <h1>Public Holidays Remaining in 2026</h1>
+      <div id="holCount" class="count holiday-count">—</div>
+      <div id="holLabel" class="label"></div>
+      <ul id="holList" class="holiday-list"></ul>
+      <p class="note">US federal public holidays.</p>
+    </div>
+  </div>
+
+  <script>
+    // US federal holidays in 2026
+    // July 4 falls on Saturday → observed Friday July 3
+    var HOLIDAYS_2026 = [
+      { name: "New Year's Day",             date: new Date(2026,  0,  1) },
+      { name: "Martin Luther King Jr. Day", date: new Date(2026,  0, 19) },
+      { name: "Presidents' Day",            date: new Date(2026,  1, 16) },
+      { name: "Memorial Day",               date: new Date(2026,  4, 25) },
+      { name: "Juneteenth",                 date: new Date(2026,  5, 19) },
+      { name: "Independence Day (observed)", date: new Date(2026, 6,  3) },
+      { name: "Labor Day",                  date: new Date(2026,  8,  7) },
+      { name: "Columbus Day",               date: new Date(2026,  9, 12) },
+      { name: "Veterans Day",               date: new Date(2026, 10, 11) },
+      { name: "Thanksgiving Day",           date: new Date(2026, 10, 26) },
+      { name: "Christmas Day",              date: new Date(2026, 11, 25) }
+    ];
+
+    function countWorkingDays(from, to) {
+      var count = 0;
+      var current = new Date(from);
+      current.setHours(0, 0, 0, 0);
+      var end = new Date(to);
+      end.setHours(0, 0, 0, 0);
+      while (current <= end) {
+        var day = current.getDay();
+        if (day !== 0 && day !== 6) {
+          count++;
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      return count;
+    }
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    var endOf2026 = new Date(2026, 11, 31);
+
+    // --- Working days ---
+    var workCountEl = document.getElementById('workCount');
+    var workLabelEl = document.getElementById('workLabel');
+    var workNoteEl  = document.getElementById('workNote');
+
+    if (today.getFullYear() > 2026) {
+      workCountEl.textContent = '0';
+      workCountEl.style.color = '#888';
+      workLabelEl.textContent = '2026 has already ended.';
+    } else {
+      var start = today > new Date(2026, 0, 1) ? today : new Date(2026, 0, 1);
+      var remaining = countWorkingDays(start, endOf2026);
+      workCountEl.textContent = remaining;
+      workLabelEl.textContent = remaining === 1 ? 'working day left' : 'working days left';
+      workNoteEl.textContent =
+        'Counted from ' +
+        start.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) +
+        ' to December\u00a031,\u00a02026 (Monday\u2013Friday only).';
+    }
+
+    // --- Holidays ---
+    var holCountEl = document.getElementById('holCount');
+    var holLabelEl = document.getElementById('holLabel');
+    var holListEl  = document.getElementById('holList');
+
+    var remainingHolidays = HOLIDAYS_2026.filter(function(h) {
+      return h.date >= today;
+    });
+
+    holCountEl.textContent = remainingHolidays.length;
+    holLabelEl.textContent = remainingHolidays.length === 1 ? 'holiday left' : 'holidays left';
+
+    HOLIDAYS_2026.forEach(function(h) {
+      var li = document.createElement('li');
+      var isPast = h.date < today;
+      if (isPast) li.classList.add('past');
+      var nameSpan = document.createElement('span');
+      nameSpan.textContent = h.name;
+      var dateSpan = document.createElement('span');
+      dateSpan.className = 'hdate';
+      dateSpan.textContent = h.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      li.appendChild(nameSpan);
+      li.appendChild(dateSpan);
+      holListEl.appendChild(li);
+    });
+  </script>
+</body>
+</html>
