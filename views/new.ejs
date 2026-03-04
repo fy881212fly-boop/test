@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Recipe</title>
+</head>
+<body>
+  <h1>New Recipe</h1>
+  <form action="/recipes" method="POST">
+    <div>
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required>
+    </div>
+    <div>
+      <label for="ingredients">Ingredients:</label>
+      <textarea id="ingredients" name="ingredients" required></textarea>
+    </div>
+    <div>
+      <label for="instructions">Instructions:</label>
+      <textarea id="instructions" name="instructions" required></textarea>
+    </div>
+    <button type="submit">Create Recipe</button>
+  </form>
+  <a href="/recipes">Cancel</a>
+</body>
+</html>

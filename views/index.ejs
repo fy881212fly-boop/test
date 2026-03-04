@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recipes</title>
+</head>
+<body>
+  <h1>Recipes</h1>
+  <a href="/recipes/new">Add New Recipe</a>
+  <ul>
+    <% recipes.forEach(recipe => { %>
+      <li><a href="/recipes/<%= recipe.id %>"><%= recipe.title %></a></li>
+    <% }); %>
+  </ul>
+</body>
+</html>
