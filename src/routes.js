@@ -17,6 +17,9 @@ function createRouter(db) {
   // Create a new recipe
   router.post('/recipes', (req, res) => {
     const { title, ingredients, instructions } = req.body;
+    if (!title || typeof title !== 'string' || !title.trim()) {
+      return res.status(400).json({ error: 'Title is required' });
+    }
     const stmt = db.prepare(
       'INSERT INTO recipes (title, ingredients, instructions) VALUES (?, ?, ?)'
     );

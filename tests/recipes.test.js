@@ -37,6 +37,24 @@ describe('Recipe API', () => {
       expect(res.status).toBe(302);
       expect(res.headers.location).toMatch(/\/recipes\/\d+/);
     });
+
+    it('returns 400 when title is empty', async () => {
+      const res = await request(app)
+        .post('/recipes')
+        .send('title=&ingredients=Something&instructions=Do+it')
+        .set('Content-Type', 'application/x-www-form-urlencoded');
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Title is required');
+    });
+
+    it('returns 400 when title is missing', async () => {
+      const res = await request(app)
+        .post('/recipes')
+        .send('ingredients=Something&instructions=Do+it')
+        .set('Content-Type', 'application/x-www-form-urlencoded');
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Title is required');
+    });
   });
 
   describe('GET /recipes/:id', () => {
