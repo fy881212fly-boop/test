@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Working Days Remaining in 2026</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f0f4f8;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 48px 64px;
+      text-align: center;
+      max-width: 480px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 1.6rem;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .count {
+      font-size: 6rem;
+      font-weight: bold;
+      color: #2563eb;
+      line-height: 1;
+      margin: 24px 0;
+    }
+    .label {
+      font-size: 1.1rem;
+      color: #555;
+    }
+    .note {
+      margin-top: 24px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .done {
+      font-size: 1.4rem;
+      color: #16a34a;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Working Days Remaining in 2026</h1>
+    <div id="count" class="count">—</div>
+    <div id="label" class="label"></div>
+    <p class="note" id="note"></p>
+  </div>
+
+  <script>
+    function countWorkingDays(from, to) {
+      var count = 0;
+      var current = new Date(from);
+      current.setHours(0, 0, 0, 0);
+      var end = new Date(to);
+      end.setHours(0, 0, 0, 0);
+      while (current <= end) {
+        var day = current.getDay();
+        if (day !== 0 && day !== 6) {
+          count++;
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      return count;
+    }
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    var endOf2026 = new Date(2026, 11, 31); // December 31, 2026
+
+    var countEl = document.getElementById('count');
+    var labelEl = document.getElementById('label');
+    var noteEl = document.getElementById('note');
+
+    if (today.getFullYear() > 2026) {
+      countEl.textContent = '0';
+      countEl.style.color = '#888';
+      labelEl.textContent = '2026 has already ended.';
+    } else {
+      var start = today > new Date(2026, 0, 1) ? today : new Date(2026, 0, 1);
+      var remaining = countWorkingDays(start, endOf2026);
+
+      countEl.textContent = remaining;
+      labelEl.textContent = remaining === 1 ? 'working day left' : 'working days left';
+      noteEl.textContent =
+        'Counted from ' +
+        start.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) +
+        ' to December\u00a031,\u00a02026 (Monday\u2013Friday only).';
+    }
+  </script>
+</body>
+</html>
